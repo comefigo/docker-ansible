@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  # ansible実行環境
+  my-ansible:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: my-ansible
+    container_name: my-ansible
+    hostname: my-ansible
+    tty: true
+    volumes:
+      - ./:/ansible
+    working_dir: /ansible

@@ -1,0 +1,14 @@
+{
+	"name": "My Ansible",
+	"dockerComposeFile": [
+		"../docker-compose.yml"
+	],
+	"service": "my-ansible",
+	"extensions": [
+		"vscoss.vscode-ansible",
+		"ms-python.python",
+		"samuelcolvin.jinjahtml"
+	],
+	"workspaceFolder": "/ansible",
+	"shutdownAction": "stopCompose"
+}

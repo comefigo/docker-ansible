@@ -1,0 +1,57 @@
+- hosts: all
+  gather_facts: false
+  vars:
+    vcenter_hostname: "192.168.1.69"
+    vcenter_username: "administrator@vsphere.local"
+    vcenter_password: ""
+    esxi_hostname: "192.168.1.110"
+    datacenter_name: "DC1"
+    datastore_name: "datastore1"
+  tasks:
+  - name: Provide information about vCenter
+    vmware_about_info:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      validate_certs: false
+    delegate_to: localhost
+    register: cluster_info
+
+  - debug:
+      var: cluster_info
+
+  - name: Create a virtual machine
+    vmware_guest:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      datacenter: "{{ datacenter_name }}"
+      validate_certs: no
+      folder: "/{{ datacenter_name }}/vm/"
+      name: test_vm_0001
+      state: poweredon
+      guest_id: centos64Guest
+      esxi_hostname: "{{ esxi_hostname }}"
+      disk:
+        - size_gb: 10
+          type: thin
+          datastore: "{{ datastore_name }}"
+      hardware:
+        memory_mb: 2048
+        num_cpus: 2
+        scsi: paravirtual
+        boot_firmware: "bios"
+      # device type:
+      # https://docs.vmware.com/jp/VMware-vSphere/7.0/com.vmware.vsphere.vm_admin.doc/GUID-AF9E24A8-2CFA-447B-AC83-35D563119667.html
+      networks:
+        - name: VM Network
+          start_connected: true
+          device_type: vmxnet3
+      # cdrom起動する場合は、コメント解除してお使いください
+      # cdrom:
+      #   type: iso
+      #   iso_path: "[{{ datastore_name }}] iso/CentOS-8.2.2004-x86_64-minimal.iso"
+    register: deploy_vm
+
+  - debug:
+      var: deploy_vm

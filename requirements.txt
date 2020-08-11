@@ -1,0 +1,4 @@
+ansible==2.9.11
+pytz==2019.3
+autopep8==1.5.3
+PyVmomi==7.0
